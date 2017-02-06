@@ -13,7 +13,6 @@ gdp = GenderDataPreprocessing('/Users/edwardcannon/Documents/unilever-2016/gende
     gender_predictor.visualize()
 
 """
-__author__ = 'edwardcannon'
 
 import pandas as pd
 from nltk.tokenize import TweetTokenizer
@@ -21,6 +20,9 @@ from nltk.corpus import stopwords
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
+
+__author__ = 'edwardcannon'
+
 
 class GenderDataPreprocessing(object):
     """
@@ -43,8 +45,8 @@ class GenderDataPreprocessing(object):
         :return:
         """
         df = pd.read_csv(self.inputfile,
-                           compression=compression,
-                           skiprows=skiprows)
+                         compression=compression,
+                         skiprows=skiprows)
         #filter for gender only
         definite_gender_df = df[(df['Gender'] == 'male') | (df['Gender'] == 'female')]
         self.input_df = definite_gender_df[pd.notnull(definite_gender_df['Avatar'])]
@@ -88,14 +90,14 @@ class GenderDataPreprocessing(object):
             for token in tokenxs:
                 tokens.append(token)
                 if token.startswith('#'):
-                    hashtag_count =+1
+                    hashtag_count += 1
                 elif token.startswith('@'):
-                    at_mentions_count+=1
+                    at_mentions_count += 1
             at_mentions.append(at_mentions_count)
             hashtags.append(hashtag_count)
             snippet_length.append(len(tokens))
             unique_words.append(len(set(tokens)))
-            counter+=1
+            counter += 1
         self.input_df['snippet_length'] = snippet_length
         self.input_df['unique_words'] = unique_words
         self.input_df['hashtag_count'] = hashtags
@@ -135,20 +137,20 @@ class GenderDataPreprocessing(object):
                     token = token.strip()
                     if token not in stop or token not in to_remove:
                         if token in gender_dict:
-                            gender_dict[token] +=1
+                            gender_dict[token] += 1
                         else:
-                            gender_dict[token] =1
+                            gender_dict[token] = 1
                     else:
                         pass
-                counter+=1
+                counter += 1
 
         male_subset = self.input_df[self.input_df['Gender'] == 'male']
         female_subset = self.input_df[self.input_df['Gender'] == 'female']
         get_distribution(male_subset, self.male_count_dict)
         get_distribution(female_subset, self.female_count_dict)
         import operator
-        self.male_count_dict = sorted(self.male_count_dict.items(), key=operator.itemgetter(1),reverse=True)
-        self.female_count_dict = sorted(self.female_count_dict.items(), key=operator.itemgetter(1),reverse=True)
+        self.male_count_dict = sorted(self.male_count_dict.items(), key=operator.itemgetter(1), reverse=True)
+        self.female_count_dict = sorted(self.female_count_dict.items(), key=operator.itemgetter(1), reverse=True)
 
 
 class GenderPredictor(object):
@@ -164,9 +166,9 @@ class GenderPredictor(object):
         self.gdp.load_clean_data()
         train_df = self.gdp.input_df.sample(10000)
         self.rf.fit(train_df[['snippet_length',
-                                       'unique_words',
-                                       'hashtag_count',
-                                       'at_mention_count']],
+                              'unique_words',
+                              'hashtag_count',
+                              'at_mention_count']],
                     train_df[['Gender']])
 
     def evaluate(self):
@@ -188,14 +190,14 @@ class GenderPredictor(object):
             for token in tokenxs:
                 tokens.append(token)
                 if token.startswith('#'):
-                    hashtag_count =+1
+                    hashtag_count += 1
                 elif token.startswith('@'):
-                    at_mentions_count+=1
+                    at_mentions_count += 1
             at_mentions.append(at_mentions_count)
             hashtags.append(hashtag_count)
             snippet_length.append(len(tokens))
             unique_words.append(len(set(tokens)))
-            counter+=1
+            counter += 1
         self.test_df['snippet_length'] = snippet_length
         self.test_df['unique_words'] = unique_words
         self.test_df['hashtag_count'] = hashtags
@@ -206,9 +208,12 @@ class GenderPredictor(object):
             if fname in self.gdp.gender_map:
                 gender = self.gdp.gender_map[fname]
                 gender_pred.append(gender)
-                countx+=1
+                countx += 1
             else:
-                result = self.rf.predict(row[['snippet_length','unique_words','hashtag_count','at_mention_count']])
+                result = self.rf.predict(row[['snippet_length',
+                                              'unique_words',
+                                              'hashtag_count',
+                                              'at_mention_count']])
                 result = str(result).replace("['", "").replace("']", "")
                 gender_pred.append(result)
                 print('Need to predict gender based on attributes other '
@@ -217,16 +222,16 @@ class GenderPredictor(object):
 
     def visualize(self):
         dx = self.test_df[['gender_pred', 'Gender']]
-        dx = dx.replace('female',0)
-        dx = dx.replace('male',1)
-        fpr, tpr, thresholds = roc_curve(dx['Gender'],dx['gender_pred'])
+        dx = dx.replace('female', 0)
+        dx = dx.replace('male', 1)
+        fpr, tpr, thresholds = roc_curve(dx['Gender'], dx['gender_pred'])
         roc_auc = auc(fpr, tpr)
         plt.title('Receiver Operating Characteristic')
         plt.plot(fpr, tpr, 'b', label='AUC = %0.2f'% roc_auc)
         plt.legend(loc='lower right')
-        plt.plot([0,1],[0,1],'r--')
-        plt.xlim([-0.1,1.2])
-        plt.ylim([-0.1,1.2])
+        plt.plot([0, 1], [0, 1], 'r--')
+        plt.xlim([-0.1, 1.2])
+        plt.ylim([-0.1, 1.2])
         plt.ylabel('True Positive Rate')
         plt.xlabel('False Positive Rate')
         plt.show()
