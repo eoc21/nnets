@@ -24,6 +24,16 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
 
+from PIL import Image
+import requests
+from io import BytesIO
+from pylab import *
+from numpy import *
+from scipy.ndimage import filters
+import scipy.misc
+
+from utils.image_utils import ImageCleaner, ImageDownloader
+
 __author__ = 'edwardcannon'
 
 
@@ -265,11 +275,18 @@ class ImageFeatureTransformer(object):
     def __init__(self):
         pass
 
-    def transform_image(self):
-        pass
+    def transform_image(self, url):
+        """
+        Transforms image into features for ml
+        :param url:
+        :return:
+        """
+        im = ImageDownloader.download_image(url)
+        #imshow(im)
+        #show()
 
 if __name__ == '__main__':
-    from utils.image_utils import ImageCleaner, ImageDownloader
-    idl = ImageDownloader()
-    idl.download_image('http://makefun.cn/wp-content/uploads/2013/04/Img369841942.jpg')
+    ift = ImageFeatureTransformer()
+
+    #ift.transform_image('http://makefun.cn/wp-content/uploads/2013/04/Img369841942.jpg')
 
