@@ -18,12 +18,14 @@ class ImageDownloader(object):
     def __init__(self):
         self.images = []
 
-    def download_image(self, url):
+    @staticmethod
+    def download_image(url):
+        """
+        Downloads image given url
+        :param url: url to extract image
+        """
         downloaded_image = requests.get(url)
-        im = array(Image.open(BytesIO(downloaded_image.content)))
-        imshow(im)
-        show()
-
+        return array(Image.open(BytesIO(downloaded_image.content)))
 
 
 class ImageCleaner(object):
