@@ -52,8 +52,8 @@ class GenderDataPreprocessing(object):
         self.input_df = definite_gender_df[pd.notnull(definite_gender_df['Avatar'])]
         self.__subset_to_useful_features()
         self.__nlp_enrichment()
-        self.gender_map = dict(zip(gdp.input_df['first_name'].tolist(),
-                                   gdp.input_df['Gender'].tolist()))
+        self.gender_map = dict(zip(self.input_df['first_name'].tolist(),
+                                   self.input_df['Gender'].tolist()))
 
     def __subset_to_useful_features(self):
         #expand features / subset features here!
@@ -238,4 +238,14 @@ class GenderPredictor(object):
 
 
 if __name__ == '__main__':
-    pass
+    from PIL import Image
+    from pylab import *
+    im = array(Image.open('/Users/edwardcannon/Pictures/Ed-USA-PhonePics/2012-12-25 14.39.20.jpg'))
+    for i in range(im.shape[0]):
+        print(im[i,:,:])
+
+    #imshow(im)
+    #print ('Please click 3 points')
+    #x = ginput(3)
+    #print('you clicked:',x)
+    #show()
