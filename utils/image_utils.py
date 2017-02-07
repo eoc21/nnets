@@ -10,7 +10,6 @@ from numpy import *
 from scipy.ndimage import filters
 import scipy.misc
 
-
 class ImageDownloader(object):
     """
     Downloads images from internet
@@ -25,8 +24,8 @@ class ImageDownloader(object):
         :param url: url to extract image
         """
         downloaded_image = requests.get(url)
-        return array(Image.open(BytesIO(downloaded_image.content)))
-
+        img = Image.open(BytesIO(downloaded_image.content))
+        return img
 
 class ImageCleaner(object):
     """
