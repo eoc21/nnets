@@ -1,6 +1,9 @@
 """
 Module to classify images taken from
 twitter into male or female
+1. Test if first name in dictionary
+2. If not use NLP for gender classification
+3. Use image of avatar as an additional ml test
 Example usage:
 gdp = GenderDataPreprocessing('/Users/edwardcannon/Documents/unilever-2016/genderPrediction/training.zip')
     df_test = pd.read_csv('/Users/edwardcannon/Documents/unilever-2016/influencer_validation/Radox/0168ff50-4cb6-4795-8550-93653414a1ed-Influencer-validation-EmSheldon-EOC21.zip',
@@ -254,25 +257,19 @@ class GenderPredictor(object):
         plt.show()
 
 
-if __name__ == '__main__':
-    from PIL import Image
-    from pylab import *
-    from numpy import *
-    from scipy.ndimage import filters
-    import scipy.misc
-    from utils.image_utils import ImageCleaner
-    im = array(Image.open('/Users/edwardcannon/Pictures/Ed-USA-PhonePics/2012-12-25 14.39.20.jpg'))
-    img_clean = ImageCleaner()
-    u, t = img_clean.denoise(im,im)
-    g = filters.gaussian_filter(im, 10)
-    scipy.misc.imsave('/Users/edwardcannon/Desktop/denoised_sisu.pdf', u)
-    scipy.misc.imsave('/Users/edwardcannon/Desktop/gaussian_smoothed_sisu.pdf', g)
-    #im2 = filters.gaussian_filter(im, 1)
-     #for i in range(im.shape[0]):
-    #    print(im[i,:,:])
+class ImageFeatureTransformer(object):
+    """
+    Transforms image pixel information
+    into features for machine learning
+    """
+    def __init__(self):
+        pass
 
-    #imshow(im2)
-    #print ('Please click 3 points')
-    #x = ginput(3)
-    #print('you clicked:',x)
-    #show()
+    def transform_image(self):
+        pass
+
+if __name__ == '__main__':
+    from utils.image_utils import ImageCleaner, ImageDownloader
+    idl = ImageDownloader()
+    idl.download_image('http://makefun.cn/wp-content/uploads/2013/04/Img369841942.jpg')
+
