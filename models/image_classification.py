@@ -32,6 +32,8 @@ from numpy import *
 from scipy.ndimage import filters
 import scipy.misc
 
+import cv2
+
 from utils.image_utils import ImageCleaner, ImageDownloader
 
 __author__ = 'edwardcannon'
@@ -278,15 +280,19 @@ class ImageFeatureTransformer(object):
     def transform_image(self, url):
         """
         Transforms image into features for ml
+        #Dense SIFT feature vector
+        #standardise image to default NxM dimensions, force image orientation
         :param url:
         :return:
         """
+        width, height = 100, 100
         im = ImageDownloader.download_image(url)
-        #imshow(im)
-        #show()
+        img = im.resize((width, height), Image.ANTIALIAS)
+        image_data = array(img)
+        imshow(img)
+        show()
 
 if __name__ == '__main__':
     ift = ImageFeatureTransformer()
-
-    #ift.transform_image('http://makefun.cn/wp-content/uploads/2013/04/Img369841942.jpg')
+    ift.transform_image('http://makefun.cn/wp-content/uploads/2013/04/Img369841942.jpg')
 
