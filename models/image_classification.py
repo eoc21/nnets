@@ -56,6 +56,10 @@ class GenderDataPreprocessing(object):
                                    self.input_df['Gender'].tolist()))
 
     def __subset_to_useful_features(self):
+        """
+        Subsets data frame to relevant columns for ml
+        :return:
+        """
         #expand features / subset features here!
         self.input_df = self.input_df[['Snippet', 'Full Name',
                                        'Avatar', 'Professions',
@@ -163,6 +167,10 @@ class GenderPredictor(object):
         self.rf = RandomForestClassifier(n_estimators=100)
 
     def train(self):
+        """
+        Trains random forest classifier on NLP snippets
+        :return:
+        """
         self.gdp.load_clean_data()
         train_df = self.gdp.input_df.sample(10000)
         self.rf.fit(train_df[['snippet_length',
@@ -172,6 +180,11 @@ class GenderPredictor(object):
                     train_df[['Gender']])
 
     def evaluate(self):
+        """
+        Does dictionary lookup for gender,
+        then falls back on RF prediction of gender
+        :return:
+        """
         gender_pred = []
         #calculate additional metrics
         tknzr = TweetTokenizer()
@@ -221,6 +234,10 @@ class GenderPredictor(object):
         self.test_df['gender_pred'] = gender_pred
 
     def visualize(self):
+        """
+        Visualizes classifier performance in ROC plot
+        :return:
+        """
         dx = self.test_df[['gender_pred', 'Gender']]
         dx = dx.replace('female', 0)
         dx = dx.replace('male', 1)
@@ -240,11 +257,21 @@ class GenderPredictor(object):
 if __name__ == '__main__':
     from PIL import Image
     from pylab import *
+    from numpy import *
+    from scipy.ndimage import filters
+    import scipy.misc
+    from utils.image_utils import ImageCleaner
     im = array(Image.open('/Users/edwardcannon/Pictures/Ed-USA-PhonePics/2012-12-25 14.39.20.jpg'))
-    for i in range(im.shape[0]):
-        print(im[i,:,:])
+    img_clean = ImageCleaner()
+    u, t = img_clean.denoise(im,im)
+    g = filters.gaussian_filter(im, 10)
+    scipy.misc.imsave('/Users/edwardcannon/Desktop/denoised_sisu.pdf', u)
+    scipy.misc.imsave('/Users/edwardcannon/Desktop/gaussian_smoothed_sisu.pdf', g)
+    #im2 = filters.gaussian_filter(im, 1)
+     #for i in range(im.shape[0]):
+    #    print(im[i,:,:])
 
-    #imshow(im)
+    #imshow(im2)
     #print ('Please click 3 points')
     #x = ginput(3)
     #print('you clicked:',x)
